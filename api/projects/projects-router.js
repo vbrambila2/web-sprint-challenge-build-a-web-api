@@ -33,4 +33,22 @@ router.get('/:id', (req, res) => {
         })
 });
 
+router.post('/', (req, res) => {
+    if(!req.body.name || !req.body.description) {
+        res.status(400).json({ message: "Name and/or Description must be provided" });
+    } else {
+        Project.insert(req.body)
+            .then(pro => {
+                return Project.get(pro.id);
+            })
+            .then(pro => {
+                res.status(201).json(pro);
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ message: "500 error" });
+            })
+    }
+})
+
 module.exports = router;
