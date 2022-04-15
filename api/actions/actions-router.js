@@ -67,4 +67,21 @@ router.put('/:id', (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    let possibleAction = await Action.get(req.params.id);
+
+    if(!possibleAction) {
+        res.status(404).json({ message: "The action with the given id does not exist" });
+    } else {
+        await Action.remove(req.params.id)
+            .then(() => {
+                res.json();
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ message: "500 error" });
+            })
+    }
+});
+
 module.exports = router;
