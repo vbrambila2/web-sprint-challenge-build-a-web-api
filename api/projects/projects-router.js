@@ -50,7 +50,6 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    console.log(req.body.name, req.body.description, req.body.completed);
     if(!req.body.name || !req.body.description || req.body.completed === undefined) {
         res.status(400).json({ message: "Name and/or Description must be provided" });
     } else {
