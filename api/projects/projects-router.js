@@ -6,11 +6,9 @@ const Project = require('./projects-model');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    console.log(req.params.id);
     Project.get(req.params.id)
         .then(pro => {
             res.json(pro);
-            console.log(pro)
         })
         .catch(err => {
             console.error(err)
@@ -49,6 +47,35 @@ router.post('/', (req, res) => {
                 res.status(500).json({ message: "500 error" });
             })
     }
-})
+});
+
+router.put('/:id', (req, res) => {
+    console.log(req.params.id);
+    if(!req.body.name || !req.body.description) {
+        res.status(400).json({ message: "Name and/or Description must be provided" });
+    } else {
+        Project.get(req.params.id)
+            .then(pro => {
+                console.log(pro)
+                if(!pro) {
+                    res.status(404).json({ message: "The project with the given id does not exist" });
+                } else {
+                    return Project.update(req.params.id, req.body);
+                }
+            })
+            .then(pro => {
+                if(pro) {
+                    return Project.get(pro.id);
+                }
+            })
+            .then(pro => {
+                res.json(pro);
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ message: "500 error" });
+            })
+    }
+});
 
 module.exports = router;
