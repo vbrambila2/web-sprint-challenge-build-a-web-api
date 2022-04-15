@@ -93,6 +93,23 @@ router.delete('/:id', async (req, res) => {
                 res.status(500).json({ message: "500 error" });
             })
     }
+});
+
+router.get('/:id/actions', async (req, res) => {
+    let project = await Project.get(req.params.id);
+
+    if(!project) {
+        res.status(404).json({ message: "The project with the given id does not exist" });
+    } else {
+        await Project.getProjectActions(req.params.id)
+            .then(pro => {
+                res.json(pro);
+            })
+            .catch(err => {
+                console.error(err);
+                res.status(500).json({ message: "500 error" });
+            })
+    }
 })
 
 module.exports = router;
