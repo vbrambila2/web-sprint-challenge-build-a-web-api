@@ -50,13 +50,12 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    console.log(req.params.id);
-    if(!req.body.name || !req.body.description) {
+    console.log(req.body.name, req.body.description, req.body.completed);
+    if(!req.body.name || !req.body.description || req.body.completed === undefined) {
         res.status(400).json({ message: "Name and/or Description must be provided" });
     } else {
         Project.get(req.params.id)
             .then(pro => {
-                console.log(pro)
                 if(!pro) {
                     res.status(404).json({ message: "The project with the given id does not exist" });
                 } else {
@@ -64,12 +63,7 @@ router.put('/:id', (req, res) => {
                 }
             })
             .then(pro => {
-                if(pro) {
-                    return Project.get(pro.id);
-                }
-            })
-            .then(pro => {
-                res.json(pro);
+                return res.json(pro);
             })
             .catch(err => {
                 console.error(err);
@@ -110,6 +104,6 @@ router.get('/:id/actions', async (req, res) => {
                 res.status(500).json({ message: "500 error" });
             })
     }
-})
+});
 
 module.exports = router;
