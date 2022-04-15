@@ -3,6 +3,8 @@ const express = require('express');
 
 const Action = require('./actions-model');
 
+const { validateAction, validateActionId } = require('../actions/actions-middlware');
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -29,6 +31,18 @@ router.get('/:id', (req, res) => {
             console.error(err);
             res.status(500).json({ message: "500 error" });
         })
+});
+
+router.post('/', validateAction, validateActionId, (req, res, next) => {
+    const actionInfo = { project_id: req.body.project_id, notes: req.body.notes, description: req.body.description };
+    console.log(actionInfo);
+
+    Action.insert(actionInfo)
+        .then(act => {
+            console.log("act", act);
+            res.status(201).json(act);
+        })
+        .catch(error => next({ error }));
 });
 
 module.exports = router;
